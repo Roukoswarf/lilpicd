@@ -6,7 +6,7 @@ from os import getpid, sched_getaffinity
 import time
 from config import threads
 
-from workers import parsers
+from workers.compressors import dyncompress
 from daemons.watcher import watcher
 
 from functools import partial
@@ -46,7 +46,7 @@ def main():
 	thread_number = manager.Queue()
 	[thread_number.put(t) for t in range(getthreads())]
 	
-	# Set event for handling worker ready condition 
+	# Set event for handling worker ready condition
 	workers_ready = Event()
 	workers_idle = Event()
 	workers_idle.set()
@@ -59,8 +59,6 @@ def main():
 
 	# Setup workqueue
 	queue = manager.Queue()
-	
-	worker_function = partial(parsers.fileParser)
 	
 	print("Starting daemons")
 	watcherd = Process(name="watcherd", target=watcher, daemon=True, args=(queue,new_file,))
@@ -89,7 +87,7 @@ def main():
 		workers_idle.clear()
 		
 		# Send to workers
-		result = workers.map(worker_function,[queue.get() for q in range(queue.qsize())])
+		result = workers.map(dyncompress,[queue.get() for q in range(queue.qsize())])
 		print(result)
 		
 		workers_idle.set()
