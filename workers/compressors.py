@@ -6,10 +6,12 @@ from subprocess import call, DEVNULL
 # Compresses major image filetypes with the tools configured
 def dyncompress(filename):
 	try:
-		imgfile = Image.open(filename)
+		with Image.open(filename) as imgfile:
+			filetype = imgfile.format.lower()
 		
-		for util in compressutils[imgfile.format]:
-			call([util].extend(compressargs[util], stdout=DEVNULL)
+		for util in compressutils[filetype]:
+			args = [arg.format(filename=filename) for arg in compressargs[util]]
+			call([util] + args, stdout=DEVNULL)
 	
 	except:
 		import traceback

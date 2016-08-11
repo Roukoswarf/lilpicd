@@ -10,49 +10,67 @@ compressutils = {'png' :[
 						#'optipng',
 						#'advdef',#redundant with zopflipng or advpng, this tool is part of advancecomp
 						#'advpng',#redundant with zopflipng or advdef
-						'exiftool'
-						]
-
+						'exiftool',
+						],
+				
 				'jpeg' :[
 						 'jpegtran',
 						 #'cjpeg',#redundant with jpegtran, this tool is part of mozjpeg
-						 'exiftool'
-						 ] 
+						 'exiftool',
+						 ],
 				
 				'gif'  :[
 						 'gifsicle',
-						 'exiftool'
-						 ]
+						 'exiftool',
+						 ],
 				}
 compressargs = {
 				'gifsicle' :[
 							'-b',
-							'-o3'
-				]
+							'-o3',
+							'{filename}',
+							],
 
-				'exiftool' :['-all=']
+				'exiftool' :[
+							'-overwrite_original_in_place',
+							'-all=',
+							'{filename}',
+							],
 				
-				'advdef'   :['-z4']					
-													
-				'advpng'   :['-z4']					
+				'advdef'   :[
+							'-z4',
+							'{filename}',
+							],
 				
-				'optipng'  :['-o4']
+				'advpng'   :[
+							'-z4',
+							'{filename}',
+							],
+				
+				'optipng'  :[
+							'-o4',
+							'{filename}',
+							],
 				
 				'zopflipng':[
 							 #'-m',			   		#this is doubles time
 							 #'--splitting=3', 		#this is doubles time
-							 '--lossy_transparent'  #loses invisible data
-							 '--prefix'				#mandatory
-							 ]			
+							 '--lossy_transparent',  #loses invisible data
+							 '--prefix',				#mandatory
+							 '{filename}',
+							 '{filename}',
+							 ],
 							 
 				'jpegtran' :[
 							 '-optimize',
 							 '-trim',				#nearly perfect but technically lossy
-							 '-progressive'
-							 ]				
+							 '-progressive',
+							 '{filename}',
+							 ],
 				'cjpeg'    :[
-							 '-optimize', 			
+							 '-optimize',
 							 '-quality 90', 		#this is lossy, defaults to 75 if not set
-							 '-progressive'
-							 ]
+							 '-progressive',
+							 '{filename}',
+							 ],
 				}
