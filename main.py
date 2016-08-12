@@ -10,8 +10,6 @@ from pymongo import MongoClient
 import workers.compressors as compressors
 from daemons.watcher import watcher
 
-from functools import partial
-
 # Gets threads with available affinity
 def getthreads():
 	if threads == 'auto':
@@ -95,8 +93,7 @@ def main():
 		workers_idle.clear()
 		
 		# Send to workers
-		result = workers.map(compressors.dyncompress,[queue.get() for q in range(queue.qsize())])
-		print(result)
+		workers.map(compressors.dyncompress,[queue.get() for q in range(queue.qsize())])
 		
 		workers_idle.set()
 if __name__ == '__main__':

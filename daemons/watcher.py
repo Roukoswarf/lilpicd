@@ -13,9 +13,8 @@ def watcher(work_queue, new_file):
 	
 	class EventHandler(pyinotify.ProcessEvent):
 		def process_default(self, event):
-			
 			# Lookup for past action
-			file_history = processed.find_one({'path': event.pathname})
+			file_history = processed.find_one({'filename': event.pathname})
 			
 			if file_history is None:
 				print('NEW FILE: {}'.format(event.name))

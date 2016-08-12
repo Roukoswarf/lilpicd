@@ -8,23 +8,23 @@ threads = 1
 # MongoDB DB name
 dbname = 'lilpicd'
 
+# Flag removal of exif/meta data
+stripexif = True
+
 compressutils = {'png' :[
 						'zopflipng',
 						#'optipng',
 						#'advdef',#redundant with zopflipng or advpng, this tool is part of advancecomp
 						#'advpng',#redundant with zopflipng or advdef
-						'exiftool',
 						],
 				
 				'jpeg' :[
 						 'jpegtran',
 						 #'cjpeg',#redundant with jpegtran, this tool is part of mozjpeg
-						 'exiftool',
 						 ],
 				
 				'gif'  :[
 						 'gifsicle',
-						 'exiftool',
 						 ],
 				}
 compressargs = {
@@ -59,7 +59,6 @@ compressargs = {
 							 #'-m',					#this is doubles time
 							 #'--splitting=3',		#this is doubles time
 							 '--lossy_transparent', #loses invisible data
-							 '--prefix',			#mandatory
 							 '-y',					#mandatory
 							 '{filename}',
 							 '{filename}',
