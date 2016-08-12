@@ -5,6 +5,7 @@ from subprocess import call, DEVNULL
 from datetime import datetime
 from pymongo import MongoClient
 from os import path, makedirs
+from shutil import move
 
 processed = None
 
@@ -26,8 +27,7 @@ def prepdest(sourcepath):
 	# Now we should safely have the subdirs under the watch dir
 	
 	# Make destination tree
-	print(path.join(writedir, subdirs))
-	#makedirs(path.join(writedir, subdirs), exist_ok=True)
+	makedirs(path.join(writedir, subdirs), exist_ok=True)
 	destpath = path.join(writedir, subdirs, path.basename(sourcepath))
 	
 	return(destpath)
@@ -35,10 +35,16 @@ def prepdest(sourcepath):
 # Compresses major image filetypes with the tools configured
 def dyncompress(filename):
 	try:
-		print(prepdest(filename))
 		# Throw into db before writes begin to ensure no double-processing
 		global processed
 		oid = processed.insert_one({'filename': filename, 'date': datetime.utcnow()})
+		
+		# if configured, move to alternative directory
+		if not writedir is None:
+			if writedir != watchdir:
+				destpath = prepdest(filename)
+				move(filename, destpath)
+				filename = destpath
 		
 		# Open image, determine type, and strip exif if desired.
 		with Image.open(filename) as imgfile:
