@@ -7,12 +7,10 @@ import time
 from config import threads, dbname
 from pymongo import MongoClient
 
-from workers.compressors import dyncompress
+import workers.compressors as compressors
 from daemons.watcher import watcher
 
 from functools import partial
-
-processed = None
 
 # Gets threads with available affinity
 def getthreads():
@@ -39,7 +37,7 @@ def initworker(thread_number, workers_ready):
 	global processed
 	mongoconnect = MongoClient('localhost', 27017)
 	db = mongoconnect[dbname]
-	processed = db['images']
+	compressors.processed = db['images']
 	
 	# The following needs to be done last in each thread init,
 	# this way automagically fixes race conditions.
@@ -97,7 +95,7 @@ def main():
 		workers_idle.clear()
 		
 		# Send to workers
-		result = workers.map(dyncompress,[queue.get() for q in range(queue.qsize())])
+		result = workers.map(compressors.dyncompress,[queue.get() for q in range(queue.qsize())])
 		print(result)
 		
 		workers_idle.set()

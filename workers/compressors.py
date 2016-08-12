@@ -5,6 +5,8 @@ from subprocess import call, DEVNULL
 from datetime import datetime
 from pymongo import MongoClient
 
+processed = None
+
 # Compresses major image filetypes with the tools configured
 def dyncompress(filename):
 	try:
