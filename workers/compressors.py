@@ -15,6 +15,7 @@ def dyncompress(filename):
 			args = [arg.format(filename=filename) for arg in compressargs[util]]
 			call([util] + args, stdout=DEVNULL)
 		
+		global processed
 		processed.insert_one({'filename': filename, 'date': datetime.utcnow()})
 		
 	except:

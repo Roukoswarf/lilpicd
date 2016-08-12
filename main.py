@@ -12,6 +12,8 @@ from daemons.watcher import watcher
 
 from functools import partial
 
+processed = None
+
 # Gets threads with available affinity
 def getthreads():
 	if threads == 'auto':
