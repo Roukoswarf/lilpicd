@@ -1,5 +1,8 @@
 # Directory to watch for file drops
-watchdir = './img'
+watchdir = './img/test'
+
+# Directory to write the finished files to
+writedir = './img/wankers'
 
 # Thread count to use for compressing images, also determines batch size
 # Options are: [int], 'auto'

@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import pyinotify
 from config import watchdir, dbname
-from os import path
 from pymongo import MongoClient
 
 # Watcher daemon
@@ -31,6 +30,6 @@ def watcher(work_queue, new_file):
 	handler = EventHandler()
 	notifier = pyinotify.Notifier(wm, handler)
 	
-	wdd = wm.add_watch(watchdir, mask, rec=False)
+	wdd = wm.add_watch(watchdir, mask, rec=True)
 	
 	notifier.loop()

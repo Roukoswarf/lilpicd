@@ -1,9 +1,10 @@
 #!/usr/bin/python
-from config import compressutils, compressargs, stripexif
+from config import compressutils, compressargs, stripexif, watchdir, writedir
 from PIL import Image
 from subprocess import call, DEVNULL
 from datetime import datetime
 from pymongo import MongoClient
+from os import path, makedirs
 
 processed = None
 
@@ -16,10 +17,25 @@ def stripmeta(filename):
 	newimg.putdata(data)
 	newimg.save(filename)
 
+# Prepare write destination, return destination filename
+# sourcepath is assumed to be absolute, as it comes from inotify
+def prepdest(sourcepath):
+	# Pull prefix off the source path
+	prefix = path.abspath(watchdir)
+	subdirs = path.relpath(path.dirname(sourcepath), prefix)
+	# Now we should safely have the subdirs under the watch dir
+	
+	# Make destination tree
+	print(path.join(writedir, subdirs))
+	#makedirs(path.join(writedir, subdirs), exist_ok=True)
+	destpath = path.join(writedir, subdirs, path.basename(sourcepath))
+	
+	return(destpath)
+
 # Compresses major image filetypes with the tools configured
 def dyncompress(filename):
 	try:
-		
+		print(prepdest(filename))
 		# Throw into db before writes begin to ensure no double-processing
 		global processed
 		oid = processed.insert_one({'filename': filename, 'date': datetime.utcnow()})
