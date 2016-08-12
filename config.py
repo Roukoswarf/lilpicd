@@ -56,10 +56,11 @@ compressargs = {
 							],
 				
 				'zopflipng':[
-							 #'-m',			   		#this is doubles time
-							 #'--splitting=3', 		#this is doubles time
-							 '--lossy_transparent',  #loses invisible data
-							 '--prefix',				#mandatory
+							 #'-m',					#this is doubles time
+							 #'--splitting=3',		#this is doubles time
+							 '--lossy_transparent', #loses invisible data
+							 '--prefix',			#mandatory
+							 '-y',					#mandatory
 							 '{filename}',
 							 '{filename}',
 							 ],
