@@ -1,9 +1,12 @@
-# directory to watch for file drops
+# Directory to watch for file drops
 watchdir = './img'
 
-# thread count to use for compressing images, also determines batch size
-# options are: [int], 'auto'
+# Thread count to use for compressing images, also determines batch size
+# Options are: [int], 'auto'
 threads = 1
+
+# MongoDB DB name
+dbname = 'lilpicd'
 
 compressutils = {'png' :[
 						'zopflipng',

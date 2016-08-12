@@ -4,7 +4,8 @@ from sys import stderr, exit
 from signal import signal, SIGINT, SIGTERM, SIG_IGN
 from os import getpid, sched_getaffinity
 import time
-from config import threads
+from config import threads, dbname
+from pymongo import MongoClient
 
 from workers.compressors import dyncompress
 from daemons.watcher import watcher
@@ -33,6 +34,11 @@ def initworker(thread_number, workers_ready):
 	signal(SIGINT, SIG_IGN)
 	signal(SIGTERM, SIG_IGN)
 	
+	global processed
+	mongoconnect = MongoClient('localhost', 27017)
+	db = mongoconnect[dbname]
+	processed = db['images']
+	
 	# The following needs to be done last in each thread init,
 	# this way automagically fixes race conditions.
 	print('Worker {} ready on PID {}'.format(thread_number.get(), getpid()))
@@ -40,7 +46,9 @@ def initworker(thread_number, workers_ready):
 		workers_ready.set()
 
 def main():
+	# Setup process pooling
 	manager = Manager()
+	
 	# Make queue for processes to grab a thread number from
 	# also used so that the last worker knows it's last.
 	thread_number = manager.Queue()
@@ -61,7 +69,7 @@ def main():
 	queue = manager.Queue()
 	
 	print("Starting daemons")
-	watcherd = Process(name="watcherd", target=watcher, daemon=True, args=(queue,new_file,))
+	watcherd = Process(name="watcherd", target=watcher, daemon=True, args=(queue, new_file,))
 	watcherd.start()
 	
 	print("Daemons started.")

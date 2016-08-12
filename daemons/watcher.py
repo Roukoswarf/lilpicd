@@ -1,21 +1,24 @@
 #!/usr/bin/python
 import pyinotify
-from config import watchdir
+from config import watchdir, dbname
 from os import path
+from pymongo import MongoClient
 
 # Watcher daemon
 def watcher(work_queue, new_file):
+	mongoconnect = MongoClient('localhost', 27017)
+	db = mongoconnect[dbname]
 	
-	# list to ensure we dont pick up our own recent writes
-	loopback = []
+	processed = db['images']
 	
 	class EventHandler(pyinotify.ProcessEvent):
 		def process_default(self, event):
-			if event.pathname not in loopback:
+			
+			# Lookup for past action
+			file_history = processed.find_one({'path': event.pathname})
+			
+			if file_history is None:
 				print('NEW FILE: {}'.format(event.name))
-				
-				# add to recent event list
-				loopback.append(event.pathname)
 				
 				# throw into the workqueue
 				work_queue.put(event.pathname)
