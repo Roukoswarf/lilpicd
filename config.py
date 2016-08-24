@@ -68,9 +68,11 @@ compressargs = {
 							 ],
 							 
 				'jpegtran' :[
+							 '-copy', 'none',
 							 '-optimize',
 							 '-trim',				#nearly perfect but technically lossy
 							 '-progressive',
+							 '-outfile', '{filename}',
 							 '{filename}',
 							 ],
 				'cjpeg'    :[
