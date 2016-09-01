@@ -14,20 +14,34 @@ dbname = 'lilpicd'
 # Flag removal of exif/meta data
 stripexif = True
 
+pillowargs = 	{'png'	:[
+						#'optimize=True', #potentially redundant with png, lossless
+						'compress_level=0' #ignored if -optimize is enabled 
+				],
+
+				'jpeg'	:[
+						'quality=90',#lossy, lower numbers will result in lower quality with smaller file sizes
+						'optimize=True',
+						'progressive=True'
+				],
+
+				'gif' 	:[
+						'optimize=True'
+				]
+}
 compressutils = {'png' :[
-						'zopflipng',
-						#'optipng',
-						#'advdef',#redundant with zopflipng or advpng, this tool is part of advancecomp
-						#'advpng',#redundant with zopflipng or advdef
+						'zopflipng',#best tool
+						#'optipng', #second best tool
+						#'advdef',  #redundant with zopflipng or advpng, this tool is part of advancecomp
+						#'advpng',  #redundant with zopflipng or advdef
 						],
 				
 				'jpeg' :[
-						 'jpegtran',
-						 #'cjpeg',#redundant with jpegtran, this tool is part of mozjpeg
+						 #'jpegtran', #redundant with pillow, lowers quality, not worth using
 						 ],
 				
 				'gif'  :[
-						 'gifsicle',
+						 #'gifsicle', #redundant with pillow
 						 ],
 				}
 compressargs = {
@@ -73,12 +87,6 @@ compressargs = {
 							 '-trim',				#nearly perfect but technically lossy
 							 '-progressive',
 							 '-outfile', '{filename}',
-							 '{filename}',
-							 ],
-				'cjpeg'    :[
-							 '-optimize',
-							 '-quality 90', 		#this is lossy, defaults to 75 if not set
-							 '-progressive',
 							 '{filename}',
 							 ],
 				}
